@@ -6,14 +6,21 @@
 		</encoder>
 	</appender>
 
-	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+	<appender name="FILE_SI" class="ch.qos.logback.core.FileAppender">
 		<file>logs/logback.log</file>
 		<encoder>
 			<pattern>%m%n</pattern>
 		</encoder>
 	</appender>
 
+	<appender name="FILE_EX" class="ch.qos.logback.core.FileAppender">
+		<file>logs/logback.log</file>
+		<encoder>
+			<pattern>%d [%t] %-5p %c - %m%n</pattern>
+		</encoder>
+	</appender>
+
 	<root level="info">
-		<appender-ref ref="FILE" />
+		<appender-ref ref="FILE_EX" />
 	</root>
 </configuration>
