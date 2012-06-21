@@ -21,6 +21,7 @@ public class ParametersPassingTest {
 	public void testSwapObjects() {
 		String a, b;
 		swap(a = "foo", b = "bar");
+		printObjectValues("Outside swap", a, b);
 		printObjectHashCodes("Outside swap", a, b);
 		// Check values
 		assertEquals("foo", a);
@@ -34,12 +35,18 @@ public class ParametersPassingTest {
 	}
 
 	private void swap(String a, String b) {
+		printObjectValues("Before swap", a, b);
 		printObjectHashCodes("Before swap", a, b);
 		String t = a; a = b; b = t;
+		printObjectValues("After swap", a, b);
 		printObjectHashCodes("After swap", a, b);
 	}
 
 	private void printPrimitiveValues(String message, int a, int b) {
+		System.out.println(message + " [a = " + a + "; b = " + b + "]");
+	}
+
+	private void printObjectValues(String message, Object a, Object b) {
 		System.out.println(message + " [a = " + a + "; b = " + b + "]");
 	}
 
