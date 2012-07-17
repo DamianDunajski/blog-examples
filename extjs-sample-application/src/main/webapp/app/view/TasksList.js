@@ -40,22 +40,20 @@ Ext.define('TaskManager.view.TasksList', {
 			items : [{
 				icon : 'ext/resources/images/edit.png',
 				handler : function(grid, rowIndex, colIndex) {
-					var record = grid.getStore().getAt(rowIndex);
-					grid.fireEvent('taskEdit', record.get('name'));
+					grid.fireEvent('taskEdit', grid.getStore().getAt(rowIndex));
 				},
 				margin : 2
 			}, {
 				icon : 'ext/resources/images/delete.png',
 				handler : function(grid, rowIndex, colIndex) {
-					var record = grid.getStore().getAt(rowIndex);
-					grid.fireEvent('taskDelete', record.get('name'));
+					grid.fireEvent('taskDelete', grid.getStore().getAt(rowIndex));
 				},
 				margin : 2
 			}],
 			width : 55
 		}],
 		hideHeaders : true,
-		anchor : '100%',
+		anchor : '100% 100%',
 		margin : 5
 	}]
 });

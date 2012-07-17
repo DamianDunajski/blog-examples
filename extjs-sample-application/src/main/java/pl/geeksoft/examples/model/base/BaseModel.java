@@ -8,6 +8,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlTransient;
 
 @MappedSuperclass
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -18,6 +19,7 @@ public abstract class BaseModel implements Serializable {
 	protected Long id;
 	@Version
 	@Column(name = "version", nullable = false)
+	@XmlTransient
 	protected Long version;
 
 	public Long getId() {

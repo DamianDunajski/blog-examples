@@ -19,7 +19,7 @@ public class TaskService extends BaseService {
 	@Path("/list")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Task> getTasksList() {
-		return this.entityManager.createQuery("SELECT t FROM Task t", Task.class).getResultList();
+		return this.entityManager.createQuery("SELECT t FROM Task t ORDER BY t.id", Task.class).getResultList();
 	}
 
 }

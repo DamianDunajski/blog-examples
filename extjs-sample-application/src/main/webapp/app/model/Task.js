@@ -7,13 +7,17 @@ Ext.define('TaskManager.model.Task', {
 		name : 'name',
 		type : 'string'
 	}, {
+		name : 'group',
+		type : 'int',
+		mapping : 'group.id'
+	}, {
 		name : 'priority',
 		type : 'string'
 	}, {
 		name : 'dueDate',
-		type : 'string'
+		type : 'date'
 	}, {
-		name : 'dueTime',
-		type : 'string'
+		name : 'reminder',
+		type : 'date'
 	}]
 }); 

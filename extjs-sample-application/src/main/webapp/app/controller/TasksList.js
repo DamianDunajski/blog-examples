@@ -15,15 +15,15 @@ Ext.define('TaskManager.controller.TasksList', {
 	handleTaskCreate : function(name) {
 		console.log('Create task with name: ' + name);
 	},
-	handleTaskEdit : function(name) {
-		console.log('Show task editor window for task: ' + name);
-		new TaskManager.view.TaskWindow().show();
+	handleTaskEdit : function(record) {
+		var widget = Ext.widget('task-window');
+		widget.down('form').loadRecord(record);
+		widget.show();
 	},
-	handleTaskDelete : function(name) {
-		console.log('Show task delete confirmation window for task: ' + name);
+	handleTaskDelete : function(record) {
 		Ext.Msg.show({
 			title : TaskManager.title + ' - delete task?',
-			msg : 'Do you want delete "' + name + '"?',
+			msg : 'Do you want delete "' + record.get('name') + '"?',
 			buttons : Ext.Msg.YESNO
 		});
 	}

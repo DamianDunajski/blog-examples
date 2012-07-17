@@ -26,12 +26,12 @@ Ext.define('TaskManager.view.TaskWindow', {
 			anchor : '100%',
 			store : 'TaskGroups',
 			queryMode : 'local',
-			displayField : 'name',
 			valueField : 'id',
+			displayField : 'name',
 			allowBlank : false
 		}, {
 			xtype : 'datefield',
-			name : 'due-date',
+			name : 'dueDate',
 			fieldLabel : 'Due date',
 			anchor : '100%',
 			format : 'Y-m-d'
@@ -40,11 +40,14 @@ Ext.define('TaskManager.view.TaskWindow', {
 			name : 'reminder',
 			fieldLabel : 'Reminder',
 			anchor : '100%',
+			format : 'H:i',
 			increment : 15
 		}, {
 			xtype : 'checkbox',
-			name : 'starred',
-			fieldLabel : 'Starred',
+			name : 'priority',
+			fieldLabel : 'Priority',
+			inputValue : 'IMPORTANT',
+			uncheckedValue : 'NORMAL'
 		}],
 		buttons : [{
 			text : 'Save',
@@ -62,6 +65,7 @@ Ext.define('TaskManager.view.TaskWindow', {
 function handleSave() {
 	var form = this.up('form').getForm();
 	if (form.isValid()) {
+		form.getRecord().set(form.getValues());
 		form.submit({
 			success : function(form, action) {
 				this.up('window').close();

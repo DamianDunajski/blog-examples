@@ -6,6 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -24,6 +26,9 @@ public class Task extends BaseModel {
 
 	@Column(name = "name", nullable = false)
 	private String       name;
+	@ManyToOne
+	@JoinColumn(name = "group_fkey", nullable = false)
+	private TaskGroup    group;
 	@Enumerated(EnumType.STRING)
 	@Column(name = "priority", nullable = false)
 	private TaskPriority priority;
@@ -31,8 +36,8 @@ public class Task extends BaseModel {
 	@Column(name = "due_date", nullable = true)
 	private Date         dueDate;
 	@Temporal(TemporalType.TIME)
-	@Column(name = "due_time", nullable = true)
-	private Date         dueTime;
+	@Column(name = "reminder", nullable = true)
+	private Date         reminder;
 
 	public String getName() {
 		return this.name;
@@ -40,6 +45,14 @@ public class Task extends BaseModel {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public TaskGroup getGroup() {
+		return this.group;
+	}
+
+	public void setGroup(TaskGroup group) {
+		this.group = group;
 	}
 
 	public TaskPriority getPriority() {
@@ -58,11 +71,11 @@ public class Task extends BaseModel {
 		this.dueDate = dueDate;
 	}
 
-	public Date getDueTime() {
-		return this.dueTime;
+	public Date getReminder() {
+		return this.reminder;
 	}
 
-	public void setDueTime(Date dueTime) {
-		this.dueTime = dueTime;
+	public void setReminder(Date reminder) {
+		this.reminder = reminder;
 	}
 }
