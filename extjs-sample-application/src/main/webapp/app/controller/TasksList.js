@@ -3,11 +3,17 @@ Ext.define('TaskManager.controller.TasksList', {
 	views : ['TasksList'],
 	init : function() {
 		this.control({
+			'tasks-list textfield' : {
+				'taskCreate' : this.handleTaskCreate,
+			},
 			'tasks-list gridview' : {
 				'taskEdit' : this.handleTaskEdit,
 				'taskDelete' : this.handleTaskDelete
 			}
 		})
+	},
+	handleTaskCreate : function(name) {
+		console.log('Create task with name: ' + name);
 	},
 	handleTaskEdit : function(name) {
 		console.log('Show task editor window for task: ' + name);

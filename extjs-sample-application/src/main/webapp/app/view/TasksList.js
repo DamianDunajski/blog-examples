@@ -7,7 +7,19 @@ Ext.define('TaskManager.view.TasksList', {
 		xtype : 'textfield',
 		anchor : '100%',
 		margin : 5,
-		emptyText : 'Enter task name'
+		emptyText : 'Enter task name',
+		enableKeyEvents : true,
+		listeners : {
+			keyUp : function(field, event) {
+				if (event.getKey() != event.ENTER) {
+					return;
+				}
+				if (this.getValue().trim() != '') {
+					this.fireEvent('taskCreate', this.getValue());
+					this.reset();
+				}
+			}
+		}
 	}, {
 		xtype : 'grid',
 		store : 'Tasks',
