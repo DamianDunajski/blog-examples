@@ -4,13 +4,16 @@ Ext.define('TaskManager.model.Task', {
 		name : 'id',
 		type : 'int'
 	}, {
+		name : 'version',
+		type : 'int'
+	}, {
 		name : 'name',
 		type : 'string'
-	}, {
+	}/*, {
 		name : 'group',
 		type : 'int',
 		mapping : 'group.id'
-	}, {
+	}*/, {
 		name : 'priority',
 		type : 'string'
 	}, {
@@ -19,5 +22,12 @@ Ext.define('TaskManager.model.Task', {
 	}, {
 		name : 'reminder',
 		type : 'date'
-	}]
-}); 
+	}],
+	proxy : {
+		type : 'rest',
+		url : 'service/tasks',
+		reader : {
+			type : 'json',
+		}
+	}
+});

@@ -12,14 +12,16 @@ import pl.geeksoft.examples.model.TaskGroup;
 import pl.geeksoft.examples.service.base.BaseService;
 
 @ManagedBean
-@Path("/task-group")
+@Path("/task/groups")
 public class TaskGroupService extends BaseService {
 
-	@GET
-	@Path("/list")
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<TaskGroup> getTaskGroupList() {
-		return this.entityManager.createQuery("SELECT tg FROM TaskGroup tg ORDER BY tg.id", TaskGroup.class).getResultList();
+	public TaskGroup getDefault() {
+		return this.entityManager.find(TaskGroup.class, 1L);
 	}
 
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<TaskGroup> findTaskGroupsList() {
+		return this.entityManager.createQuery("SELECT tg FROM TaskGroup tg ORDER BY tg.id", TaskGroup.class).getResultList();
+	}
 }

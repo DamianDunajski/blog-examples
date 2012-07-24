@@ -15,6 +15,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import pl.geeksoft.examples.model.base.BaseModel;
 import pl.geeksoft.examples.model.constant.TaskPriority;
 
@@ -77,5 +79,17 @@ public class Task extends BaseModel {
 
 	public void setReminder(Date reminder) {
 		this.reminder = reminder;
+	}
+
+	@Override
+	public String toString() {
+		ToStringBuilder builder = new ToStringBuilder(this);
+		builder.appendSuper(super.toString());
+		builder.append("name", this.name);
+		builder.append("group", this.group);
+		builder.append("priority", this.priority);
+		builder.append("dueDate", this.dueDate);
+		builder.append("reminder", this.reminder);
+		return builder.toString();
 	}
 }
