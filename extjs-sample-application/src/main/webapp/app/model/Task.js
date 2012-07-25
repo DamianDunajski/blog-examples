@@ -9,11 +9,7 @@ Ext.define('TaskManager.model.Task', {
 	}, {
 		name : 'name',
 		type : 'string'
-	}/*, {
-		name : 'group',
-		type : 'int',
-		mapping : 'group.id'
-	}*/, {
+	}, {
 		name : 'priority',
 		type : 'string'
 	}, {
@@ -22,6 +18,13 @@ Ext.define('TaskManager.model.Task', {
 	}, {
 		name : 'reminder',
 		type : 'date'
+	}],
+	associations : [{
+		type : 'belongsTo',
+		model : 'TaskManager.model.TaskGroup',
+		getterName : 'getGroup',
+		setterName : 'setGroup',
+		associationKey : 'group'
 	}],
 	proxy : {
 		type : 'rest',
