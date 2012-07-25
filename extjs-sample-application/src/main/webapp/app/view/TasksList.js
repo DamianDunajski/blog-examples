@@ -8,18 +8,7 @@ Ext.define('TaskManager.view.TasksList', {
 		anchor : '100%',
 		margin : 5,
 		emptyText : 'Enter task name',
-		enableKeyEvents : true,
-		listeners : {
-			keyUp : function(field, event) {
-				if (event.getKey() != event.ENTER) {
-					return;
-				}
-				if (this.getValue().trim() != '') {
-					this.fireEvent('taskCreate', this.getValue());
-					this.reset();
-				}
-			}
-		}
+		enableKeyEvents : true
 	}, {
 		xtype : 'grid',
 		store : 'Tasks',
@@ -37,20 +26,18 @@ Ext.define('TaskManager.view.TasksList', {
 			width : 75
 		}, {
 			xtype : 'actioncolumn',
+			id : 'edit-action',
 			items : [{
 				icon : 'ext/resources/images/edit.png',
-				handler : function(grid, rowIndex, colIndex) {
-					grid.fireEvent('taskEdit', grid.getStore().getAt(rowIndex));
-				},
-				margin : 2
-			}, {
-				icon : 'ext/resources/images/delete.png',
-				handler : function(grid, rowIndex, colIndex) {
-					grid.fireEvent('taskDelete', grid.getStore().getAt(rowIndex));
-				},
-				margin : 2
 			}],
-			width : 55
+			width : 22
+		}, {
+			xtype : 'actioncolumn',
+			id : 'remove-action',
+			items : [{
+				icon : 'ext/resources/images/delete.png',
+			}],
+			width : 22
 		}],
 		hideHeaders : true,
 		anchor : '100% 100%',

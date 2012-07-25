@@ -5,11 +5,13 @@ Ext.define('TaskManager.controller.Tasks', {
 	init : function() {
 		this.control({
 			'tasks-list textfield' : {
-				'taskCreate' : this.handleTaskCreate,
+				'keyup' : this.handleTaskCreate,
 			},
-			'tasks-list gridview' : {
-				'taskEdit' : this.handleTaskEdit,
-				'taskDelete' : this.handleTaskDelete
+			'tasks-list actioncolumn#edit-action' : {
+				'click' : this.handleTaskEdit
+			},
+			'tasks-list actioncolumn#remove-action' : {
+				'click' : this.handleTaskRemove
 			},
 			'task-window button[action = save]' : {
 				'click' : this.handleTaskEditSave
@@ -19,17 +21,26 @@ Ext.define('TaskManager.controller.Tasks', {
 			}
 		})
 	},
-	handleTaskCreate : function(name) {
-		// create task
-		var task = Ext.create('TaskManager.model.Task', {
-			name : name,
-		});
-		task.save();
-		// reload store
-		this.getTasksStore().load();
+	handleTaskCreate : function(field, event) {
+		if (event.getKey() != event.ENTER) {
+			return;
+		}
+		var taskName = field.getValue();
+		if (taskName.trim() != '') {
+			// create task
+			var task = Ext.create('TaskManager.model.Task', {
+				name : taskName,
+			});
+			task.save();
+			// reset field
+			field.reset();
+			// reload store
+			this.getTasksStore().load();
+		}
 	},
-	handleTaskEdit : function(record) {
+	handleTaskEdit : function(grid, cell, rowIndex, colIndex, event) {
 		// get task
+		var record = grid.getStore().getAt(rowIndex);
 		Ext.ModelManager.getModel('TaskManager.model.Task').load(record.get('id'), {
 			success : function(task) {
 				// show window
@@ -39,25 +50,9 @@ Ext.define('TaskManager.controller.Tasks', {
 			}
 		});
 	},
-	handleTaskEditSave : function(button) {
-		var form = button.up('form').getForm();
-		if (form.isValid()) {
-			// save task
-			var record = form.getRecord();
-			record.set(form.getValues());
-			record.save();
-			// close window
-			button.up('window').close();
-			// reload store
-			this.getTasksStore().load();
-		}
-	},
-	handleTaskEditCancel : function(button) {
-		// close window
-		button.up('window').close();
-	},
-	handleTaskDelete : function(record) {
+	handleTaskRemove : function(grid, cell, rowIndex, colIndex, event) {
 		// ask for confirmation
+		var record = grid.getStore().getAt(rowIndex);
 		Ext.Msg.show({
 			title : TaskManager.title + ' - delete task?',
 			msg : 'Do you want delete "' + record.get('name') + '"?',
@@ -71,5 +66,22 @@ Ext.define('TaskManager.controller.Tasks', {
 				}
 			}
 		});
+	},
+	handleTaskEditSave : function(button, event) {
+		var form = button.up('form').getForm();
+		if (form.isValid()) {
+			// save task
+			var record = form.getRecord();
+			record.set(form.getValues());
+			record.save();
+			// close window
+			button.up('window').close();
+			// reload store
+			this.getTasksStore().load();
+		}
+	},
+	handleTaskEditCancel : function(button, event) {
+		// close window
+		button.up('window').close();
 	}
 })
