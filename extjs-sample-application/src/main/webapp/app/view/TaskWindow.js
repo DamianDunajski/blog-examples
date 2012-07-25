@@ -18,7 +18,7 @@ Ext.define('TaskManager.view.TaskWindow', {
 			fieldLabel : 'Name',
 			anchor : '100%',
 			allowBlank : false
-		}/*, {
+		}, {
 			xtype : 'combobox',
 			name : 'group',
 			fieldLabel : 'Group',
@@ -28,7 +28,7 @@ Ext.define('TaskManager.view.TaskWindow', {
 			valueField : 'id',
 			displayField : 'name',
 			allowBlank : false
-		}*/, {
+		}, {
 			xtype : 'datefield',
 			name : 'dueDate',
 			fieldLabel : 'Due date',
@@ -50,29 +50,13 @@ Ext.define('TaskManager.view.TaskWindow', {
 		}],
 		buttons : [{
 			text : 'Save',
+			action : 'save',
 			formBind : true,
-			disabled : true,
-			handler : handleSave
+			disabled : true
 		}, {
 			text : 'Cancel',
-			handler : handleCancel
+			action : 'cancel'
 		}],
 		margin : 5
 	}
 })
-
-function handleSave() {
-	var form = this.up('form').getForm();
-	if (form.isValid()) {
-		// save
-		var record = form.getRecord();
-		record.set(form.getValues());
-		record.save();
-		// close
-		form.up('window').close();
-	}
-}
-
-function handleCancel() {
-	this.up('window').close();
-}

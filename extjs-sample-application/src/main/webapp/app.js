@@ -26,5 +26,5 @@ Ext.application({
 	name : TaskManager.name,
 	autoCreateViewport : true,
 	stores : ['Tasks', 'TaskGroups'],
-	controllers : ['TasksList']
+	controllers : ['Tasks']
 })
