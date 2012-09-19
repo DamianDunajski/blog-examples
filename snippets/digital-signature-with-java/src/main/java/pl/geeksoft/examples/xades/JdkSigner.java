@@ -1,5 +1,6 @@
 package pl.geeksoft.examples.xades;
 
+import java.io.StringWriter;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 
@@ -18,26 +19,18 @@ import javax.xml.crypto.dsig.keyinfo.KeyInfo;
 import javax.xml.crypto.dsig.keyinfo.KeyInfoFactory;
 import javax.xml.crypto.dsig.keyinfo.KeyValue;
 import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import pl.geeksoft.examples.util.DOMUtils;
 
 import com.google.common.collect.Lists;
 
 public class JdkSigner {
 
-	public static String xadesNS = "http://uri.etsi.org/01903/v1.3.2#";
-
-	public void sign() throws Exception {
+	public String sign() throws Exception {
 		KeyPair keyPair = KeyPairGenerator.getInstance("RSA").generateKeyPair();
 		// prepare
 		String id = "xmldsig-1";
@@ -55,7 +48,7 @@ public class JdkSigner {
 		KeyValue keyValue = keyInfoFactory.newKeyValue(keyPair.getPublic());
 		KeyInfo keyInfo = keyInfoFactory.newKeyInfo(Lists.newArrayList(keyValue));
 		// object
-		Document document = createDocument("Hello World");
+		Document document = createDocument();
 		XMLObject documentXmlObject = signatureFactory.newXMLObject(Lists.newArrayList(new DOMStructure(document.getDocumentElement())), id + "-document", "text/xml", null);
 		Document signedProperties = createSignedProperties(id);
 		XMLObject signedPropertiesXmlObject = signatureFactory.newXMLObject(Lists.newArrayList(new DOMStructure(signedProperties.getDocumentElement())), null, null, null);
@@ -64,25 +57,22 @@ public class JdkSigner {
 		DOMSignContext signContext = new DOMSignContext(keyPair.getPrivate(), document);
 		signContext.putNamespacePrefix(XMLSignature.XMLNS, "ds");
 		xmlSignature.sign(signContext);
-		// transform
-		transform(document);
+		// return
+		StringWriter stringWriter = new StringWriter();
+		DOMUtils.transform(document, stringWriter);
+		return stringWriter.toString();
 	}
 
-	private Document createDocument(String content) throws ParserConfigurationException {
-		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-		documentBuilderFactory.setNamespaceAware(true);
-		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-		Document document = documentBuilder.newDocument();
-		if (content != null) {
-			Element element = document.createElement("content");
-			element.setTextContent(content);
-			document.appendChild(element);
-		}
+	private Document createDocument() throws ParserConfigurationException {
+		Document document = DOMUtils.newDocument();
+		Element content = document.createElement("content");
+		content.setTextContent("Hello World");
+		document.appendChild(content);
 		return document;
 	}
 
 	private Document createSignedProperties(String target) throws ParserConfigurationException {
-		Document document = createDocument(null);
+		Document document = DOMUtils.newDocument();
 		// qualifying properties
 		Element qualifyingProperties = document.createElementNS("http://uri.etsi.org/01903/v1.3.2#", "xades:QualifyingProperties");
 		qualifyingProperties.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:xades141", "http://uri.etsi.org/01903/v1.4.1#");
@@ -114,7 +104,7 @@ public class JdkSigner {
 		certDigest.appendChild(digestMethod);
 		// digest value
 		Element digestValue = document.createElement("ds:DigestValue");
-		digestValue.setTextContent("CbLyQLmlowrl=");
+		digestValue.setTextContent("aGVsbG8gd29ybGQ=");
 		certDigest.appendChild(digestValue);
 		// issuer serial
 		Element issuerSerial = document.createElement("xades:IssuerSerial");
@@ -139,12 +129,6 @@ public class JdkSigner {
 		mimeType.setTextContent("text/xml");
 		dataObjectFormat.appendChild(mimeType);
 		return document;
-	}
-
-	private void transform(Document document) throws TransformerException {
-		Transformer transformer = TransformerFactory.newInstance().newTransformer();
-		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-		transformer.transform(new DOMSource(document), new StreamResult(System.out));
 	}
 
 }
