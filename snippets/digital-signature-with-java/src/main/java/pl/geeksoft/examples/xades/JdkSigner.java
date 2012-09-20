@@ -1,8 +1,8 @@
 package pl.geeksoft.examples.xades;
 
 import java.io.StringWriter;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
+import java.security.Key;
+import java.security.cert.Certificate;
 
 import javax.xml.XMLConstants;
 import javax.xml.crypto.dom.DOMStructure;
@@ -17,7 +17,7 @@ import javax.xml.crypto.dsig.XMLSignatureFactory;
 import javax.xml.crypto.dsig.dom.DOMSignContext;
 import javax.xml.crypto.dsig.keyinfo.KeyInfo;
 import javax.xml.crypto.dsig.keyinfo.KeyInfoFactory;
-import javax.xml.crypto.dsig.keyinfo.KeyValue;
+import javax.xml.crypto.dsig.keyinfo.X509Data;
 import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -30,9 +30,7 @@ import com.google.common.collect.Lists;
 
 public class JdkSigner {
 
-	public String sign() throws Exception {
-		KeyPair keyPair = KeyPairGenerator.getInstance("RSA").generateKeyPair();
-		// prepare
+	public String sign(Certificate certificate, Key key) throws Exception {
 		String id = "xmldsig-1";
 		XMLSignatureFactory signatureFactory = XMLSignatureFactory.getInstance("DOM");
 		// signed info
@@ -40,13 +38,13 @@ public class JdkSigner {
 		SignatureMethod signatureMethod = signatureFactory.newSignatureMethod(SignatureMethod.RSA_SHA1, null);
 		DigestMethod digestMethod = signatureFactory.newDigestMethod(DigestMethod.SHA1, null);
 		// references
-		Reference documentReference = signatureFactory.newReference("#" + id +"-document", digestMethod, null, "http://www.w3.org/2000/09/xmldsig#Object", id +"-document-ref");
-		Reference signedPropertiesReference = signatureFactory.newReference("#" + id +"-signed-properties", digestMethod, null, "http://uri.etsi.org/01903#SignedProperties", null);
+		Reference documentReference = signatureFactory.newReference("#" + id + "-document", digestMethod, null, "http://www.w3.org/2000/09/xmldsig#Object", id + "-document-ref");
+		Reference signedPropertiesReference = signatureFactory.newReference("#" + id + "-signed-properties", digestMethod, null, "http://uri.etsi.org/01903#SignedProperties", null);
 		SignedInfo signedInfo = signatureFactory.newSignedInfo(canonicalizationMethod, signatureMethod, Lists.newArrayList(documentReference, signedPropertiesReference));
 		// key info
 		KeyInfoFactory keyInfoFactory = signatureFactory.getKeyInfoFactory();
-		KeyValue keyValue = keyInfoFactory.newKeyValue(keyPair.getPublic());
-		KeyInfo keyInfo = keyInfoFactory.newKeyInfo(Lists.newArrayList(keyValue));
+		X509Data x509Data = keyInfoFactory.newX509Data(Lists.newArrayList(certificate));
+		KeyInfo keyInfo = keyInfoFactory.newKeyInfo(Lists.newArrayList(x509Data));
 		// object
 		Document document = createDocument();
 		XMLObject documentXmlObject = signatureFactory.newXMLObject(Lists.newArrayList(new DOMStructure(document.getDocumentElement())), id + "-document", "text/xml", null);
@@ -54,7 +52,7 @@ public class JdkSigner {
 		XMLObject signedPropertiesXmlObject = signatureFactory.newXMLObject(Lists.newArrayList(new DOMStructure(signedProperties.getDocumentElement())), null, null, null);
 		// xml signature
 		XMLSignature xmlSignature = signatureFactory.newXMLSignature(signedInfo, keyInfo, Lists.newArrayList(documentXmlObject, signedPropertiesXmlObject), id, null);
-		DOMSignContext signContext = new DOMSignContext(keyPair.getPrivate(), document);
+		DOMSignContext signContext = new DOMSignContext(key, document);
 		signContext.putNamespacePrefix(XMLSignature.XMLNS, "ds");
 		xmlSignature.sign(signContext);
 		// return
