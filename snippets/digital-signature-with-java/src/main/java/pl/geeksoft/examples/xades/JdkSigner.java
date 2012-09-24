@@ -1,6 +1,5 @@
 package pl.geeksoft.examples.xades;
 
-import java.io.StringWriter;
 import java.security.Key;
 import java.security.cert.Certificate;
 
@@ -28,7 +27,7 @@ import pl.geeksoft.examples.util.DOMUtils;
 
 import com.google.common.collect.Lists;
 
-public class JdkSigner {
+public class JdkSigner extends AbstractSigner {
 
 	public String sign(Certificate certificate, Key key) throws Exception {
 		String id = "xmldsig-1";
@@ -56,17 +55,7 @@ public class JdkSigner {
 		signContext.putNamespacePrefix(XMLSignature.XMLNS, "ds");
 		xmlSignature.sign(signContext);
 		// return
-		StringWriter stringWriter = new StringWriter();
-		DOMUtils.transform(document, stringWriter);
-		return stringWriter.toString();
-	}
-
-	private Document createDocument() throws ParserConfigurationException {
-		Document document = DOMUtils.newDocument();
-		Element content = document.createElement("content");
-		content.setTextContent("Hello World");
-		document.appendChild(content);
-		return document;
+		return toString(document);
 	}
 
 	private Document createSignedProperties(String target) throws ParserConfigurationException {

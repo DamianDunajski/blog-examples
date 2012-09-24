@@ -52,7 +52,7 @@ public class DOMUtils {
 
 	private static TransformerFactory transformerFactory() {
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
-		transformerFactory.setAttribute("indent-number", 2);
+		// transformerFactory.setAttribute("indent-number", 2);
 		return transformerFactory;
 	}
 
