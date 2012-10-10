@@ -2,6 +2,9 @@ package pl.geeksoft.examples.xades;
 
 import java.security.Key;
 import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.xml.XMLConstants;
 import javax.xml.crypto.dom.DOMStructure;
@@ -29,6 +32,8 @@ import com.google.common.collect.Lists;
 
 public class JdkSigner extends AbstractSigner {
 
+	private SimpleDateFormat ISO_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+
 	public String sign(Certificate certificate, Key key) throws Exception {
 		String id = "xmldsig-1";
 		XMLSignatureFactory signatureFactory = XMLSignatureFactory.getInstance("DOM");
@@ -47,7 +52,7 @@ public class JdkSigner extends AbstractSigner {
 		// object
 		Document document = createDocument();
 		XMLObject documentXmlObject = signatureFactory.newXMLObject(Lists.newArrayList(new DOMStructure(document.getDocumentElement())), id + "-document", "text/xml", null);
-		Document signedProperties = createSignedProperties(id);
+		Document signedProperties = createSignedProperties(id, (X509Certificate) certificate);
 		XMLObject signedPropertiesXmlObject = signatureFactory.newXMLObject(Lists.newArrayList(new DOMStructure(signedProperties.getDocumentElement())), null, null, null);
 		// xml signature
 		XMLSignature xmlSignature = signatureFactory.newXMLSignature(signedInfo, keyInfo, Lists.newArrayList(documentXmlObject, signedPropertiesXmlObject), id, null);
@@ -58,7 +63,7 @@ public class JdkSigner extends AbstractSigner {
 		return toString(document);
 	}
 
-	private Document createSignedProperties(String target) throws ParserConfigurationException {
+	private Document createSignedProperties(String target, X509Certificate certificate) throws ParserConfigurationException {
 		Document document = DOMUtils.newDocument();
 		// qualifying properties
 		Element qualifyingProperties = document.createElementNS("http://uri.etsi.org/01903/v1.3.2#", "xades:QualifyingProperties");
@@ -74,7 +79,7 @@ public class JdkSigner extends AbstractSigner {
 		signedProperties.appendChild(signedSignatureProperties);
 		// signing time
 		Element signingTime = document.createElement("xades:SigningTime");
-		signingTime.setTextContent("2012-09-12T15:45:07.901+01:00");
+		signingTime.setTextContent(ISO_DATE_FORMAT.format(new Date()));
 		signedSignatureProperties.appendChild(signingTime);
 		// signing certificate
 		Element signingCertificate = document.createElement("xades:SigningCertificate");
@@ -89,7 +94,7 @@ public class JdkSigner extends AbstractSigner {
 		Element digestMethod = document.createElement("ds:DigestMethod");
 		digestMethod.setAttribute("Algorithm", "http://www.w3.org/2000/09/xmldsig#sha1");
 		certDigest.appendChild(digestMethod);
-		// digest value
+		// digest value // fH232qZQ+YhaqtKrOXNBB4UL+WY=
 		Element digestValue = document.createElement("ds:DigestValue");
 		digestValue.setTextContent("aGVsbG8gd29ybGQ=");
 		certDigest.appendChild(digestValue);
@@ -98,11 +103,11 @@ public class JdkSigner extends AbstractSigner {
 		cert.appendChild(issuerSerial);
 		// X509 issuer name
 		Element x509IssuerName = document.createElement("ds:X509IssuerName");
-		x509IssuerName.setTextContent("CN=developer, O=Ministerstwo Finansów, C=PL");
+		x509IssuerName.setTextContent(certificate.getSubjectDN().getName().replace(", ", ","));
 		issuerSerial.appendChild(x509IssuerName);
 		// X509 serial number
 		Element x509SerialNumber = document.createElement("ds:X509SerialNumber");
-		x509SerialNumber.setTextContent("1677");
+		x509SerialNumber.setTextContent(certificate.getSerialNumber().toString());
 		issuerSerial.appendChild(x509SerialNumber);
 		// signed data object properties
 		Element signedDataObjectProperties = document.createElement("xades:SignedDataObjectProperties");
