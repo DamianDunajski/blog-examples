@@ -1,0 +1,3 @@
+Possible mistakes:
+1) invalid EJB declaration (no @Stateless annotation)
+2) database transaction rollback
