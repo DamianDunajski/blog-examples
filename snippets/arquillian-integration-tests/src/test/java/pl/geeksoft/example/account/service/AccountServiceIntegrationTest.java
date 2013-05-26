@@ -1,6 +1,6 @@
 package pl.geeksoft.example.account.service;
 
-import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+import static org.junit.Assert.assertNotNull;
 
 import javax.ejb.EJB;
 
@@ -32,11 +32,16 @@ public class AccountServiceIntegrationTest {
 
 	@Deployment
 	public static JavaArchive deploy() {
-		return ShrinkWrap.create(JavaArchive.class).addClasses(AccountService.class, AccountServiceImpl.class)
+		return ShrinkWrap.create(JavaArchive.class)
+				.addClasses(AccountService.class, AccountServiceImpl.class)
 				.addClasses(AccountRepository.class, AccountRepositoryImpl.class)
 				.addClasses(SecurityService.class, SecurityServiceImpl.class)
+				.addClass(AccountAlreadyExistsException.class)
+				.addClass(Account.class)
 				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-				.addAsManifestResource("META-INF/persistence.xml", "persistence.xml");
+				.addAsManifestResource("META-INF/persistence.xml", "persistence.xml")
+				.addPackages(true, "org/apache/commons")
+				.addPackages(true, "org/joda/time");
 	}
 
 	@Test(expected = AccountAlreadyExistsException.class)

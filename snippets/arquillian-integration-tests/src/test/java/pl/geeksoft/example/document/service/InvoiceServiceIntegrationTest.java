@@ -12,8 +12,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import pl.geeksoft.example.account.service.AccountService;
-import pl.geeksoft.example.account.service.AccountServiceImpl;
+import pl.geeksoft.example.document.model.Invoice;
 import pl.geeksoft.example.document.repository.DocumentRepository;
 import pl.geeksoft.example.document.repository.DocumentRepositoryImpl;
 
@@ -30,9 +29,10 @@ public class InvoiceServiceIntegrationTest {
 
 	@Deployment
 	public static JavaArchive deploy() {
-		return ShrinkWrap.create(JavaArchive.class).addClasses(AccountService.class, AccountServiceImpl.class)
+		return ShrinkWrap.create(JavaArchive.class)
 				.addClasses(InvoiceService.class, InvoiceServiceImpl.class)
 				.addClasses(DocumentRepository.class, DocumentRepositoryImpl.class)
+				.addClass(Invoice.class)
 				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
 				.addAsManifestResource("META-INF/persistence.xml", "persistence.xml");
 	}
