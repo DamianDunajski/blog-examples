@@ -1,4 +1,4 @@
-package pl.geeksoft.example.account.service;
+package pl.geeksoft.example.account.repository;
 
 import javax.ejb.Stateless;
 
@@ -12,9 +12,16 @@ import pl.geeksoft.example.account.model.Account;
 @Stateless
 public class AccountRepositoryImpl implements AccountRepository {
 
+//	@PersistenceContext
+//	private EntityManager entityManager;
+
 	@Override
 	public void save(Account account) {
-		System.out.println("account = " + account);
+//		if (account.getId() == null) {
+//			entityManager.persist(account);
+//		} else {
+//			entityManager.merge(account);
+//		}
 	}
 
 }

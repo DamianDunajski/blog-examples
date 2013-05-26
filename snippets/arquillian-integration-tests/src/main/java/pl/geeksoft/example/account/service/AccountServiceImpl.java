@@ -5,7 +5,8 @@ import javax.ejb.Stateless;
 
 import org.joda.time.DateTime;
 
-import pl.geeksoft.example.account.exception.AccountAlreadyExistsException;
+import pl.geeksoft.example.account.repository.AccountRepository;
+import pl.geeksoft.example.account.service.exception.AccountAlreadyExistsException;
 import pl.geeksoft.example.account.model.Account;
 import pl.geeksoft.example.security.SecurityService;
 

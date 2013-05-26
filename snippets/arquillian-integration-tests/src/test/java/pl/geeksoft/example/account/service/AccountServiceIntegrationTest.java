@@ -2,7 +2,7 @@ package pl.geeksoft.example.account.service;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 
-import javax.inject.Inject;
+import javax.ejb.EJB;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -12,8 +12,10 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import pl.geeksoft.example.account.exception.AccountAlreadyExistsException;
 import pl.geeksoft.example.account.model.Account;
+import pl.geeksoft.example.account.repository.AccountRepository;
+import pl.geeksoft.example.account.repository.AccountRepositoryImpl;
+import pl.geeksoft.example.account.service.exception.AccountAlreadyExistsException;
 import pl.geeksoft.example.security.SecurityService;
 import pl.geeksoft.example.security.SecurityServiceImpl;
 
@@ -25,16 +27,16 @@ import pl.geeksoft.example.security.SecurityServiceImpl;
 @RunWith(Arquillian.class)
 public class AccountServiceIntegrationTest {
 
-	@Inject
+	@EJB
 	private AccountService accountService;
 
 	@Deployment
 	public static JavaArchive deploy() {
-		return ShrinkWrap.create(JavaArchive.class)
-				.addClasses(AccountService.class, AccountServiceImpl.class)
+		return ShrinkWrap.create(JavaArchive.class).addClasses(AccountService.class, AccountServiceImpl.class)
 				.addClasses(AccountRepository.class, AccountRepositoryImpl.class)
 				.addClasses(SecurityService.class, SecurityServiceImpl.class)
-				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
+				.addAsManifestResource("META-INF/persistence.xml", "persistence.xml");
 	}
 
 	@Test(expected = AccountAlreadyExistsException.class)

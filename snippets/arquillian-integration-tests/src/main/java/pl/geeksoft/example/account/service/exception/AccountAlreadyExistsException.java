@@ -1,4 +1,4 @@
-package pl.geeksoft.example.account.exception;
+package pl.geeksoft.example.account.service.exception;
 
 /**
  * User: Damian Dunajski

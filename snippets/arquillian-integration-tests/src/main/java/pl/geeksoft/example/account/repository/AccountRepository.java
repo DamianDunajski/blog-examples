@@ -1,4 +1,4 @@
-package pl.geeksoft.example.account.service;
+package pl.geeksoft.example.account.repository;
 
 import pl.geeksoft.example.account.model.Account;
 
