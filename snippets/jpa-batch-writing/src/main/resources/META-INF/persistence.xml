@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+	<persistence-unit name="default-eclipselink-postgresql" transaction-type="RESOURCE_LOCAL">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<class>pl.geeksoft.examples.EmployeeEntity</class>
+		<properties>
+			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://ubuntu-dev-1/jpa-batch-writing"/>
+			<property name="javax.persistence.jdbc.user" value="damdun"/>
+			<!-- schema generation -->
+			<property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
+			<!-- sql statements logging -->
+			<property name="eclipselink.logging.level" value="fine"/>
+			<!-- jdbc batch writing -->
+			<property name="eclipselink.jdbc.batch-writing" value="jdbc"/>
+			<property name="eclipselink.jdbc.batch-writing.size" value="100"/>
+		</properties>
+	</persistence-unit>
+	<persistence-unit name="default-hibernate-postgresql" transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		<class>pl.geeksoft.examples.EmployeeEntity</class>
+		<properties>
+			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://ubuntu-dev-1/jpa-batch-writing"/>
+			<property name="javax.persistence.jdbc.user" value="damdun"/>
+			<!-- schema generation -->
+			<property name="hibernate.hbm2ddl.auto" value="create"/>
+			<!-- sql statements logging -->
+			<property name="hibernate.show_sql" value="true"/>
+			<!-- jdbc batch writing -->
+			<property name="hibernate.jdbc.batch_size" value="100"/>
+			<property name="hibernate.jdbc.batch_versioned_data" value="true"/>
+		</properties>
+	</persistence-unit>
+</persistence>
